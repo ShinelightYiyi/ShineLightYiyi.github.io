@@ -12,7 +12,7 @@ github_repo: "https://github.com/ShinelightYiyi/ShineLightYiyi.github.io" # you 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
 sidebar-about-description: "中国传媒大学游戏专业在读，中传游戏研发社社长"
-sidebar-avatar: /img/about-oc-gentle.png      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: /img/about-oc-gentle.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 
