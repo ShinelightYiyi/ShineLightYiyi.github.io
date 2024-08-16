@@ -99,16 +99,13 @@ service-worker: true
 # Friends
 friends: [
     {
-        title: "WY",
-        href: "http://zhengwuyang.com"
+        title: "Bilibili",
+        href: "https://space.bilibili.com/281061782"
     },{
-        title: "简书·BY",
-        href: "http://www.jianshu.com/u/e71990ada2fd"
+        title: "GCORES",
+        href: "https://www.gcores.com/users/712105/talks"
     },{
-        title: "Apple",
-        href: "https://apple.com"
-    },{
-        title: "Apple Developer",
-        href: "https://developer.apple.com/"
+        title: "ZHIHU",
+        href: "https://www.zhihu.com/people/aaa-3-46-10"
     }
 ]
