@@ -1,0 +1,230 @@
+---
+/**
+ * Sidebar — Industrial dark navigation panel.
+ * Layout: Brand · Search · Primary Nav · Categorized Posts · Social
+ */
+import { getCollection } from 'astro:content';
+import { SITE, AUTHOR, NAV, SOCIAL, CATEGORIES } from '~/config';
+import Icon from './Icon.astro';
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const postsByCategory = CATEGORIES.map((cat) => ({
+  ...cat,
+  posts: allPosts.filter((p) => p.data.category === cat.id).slice(0, 8),
+}));
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => {
+  if (href === '/') return currentPath === '/';
+  return currentPath === href || currentPath.startsWith(href + '/');
+};
+---
+
+<aside
+  id="app-sidebar"
+  class="group/sidebar fixed left-0 top-0 z-40 flex h-dvh w-72 flex-col
+         bg-ink-950 text-ink-300 border-r border-ink-800
+         transition-transform duration-300 ease-out
+         max-lg:-translate-x-full max-lg:data-[open=true]:translate-x-0
+         shadow-crisp"
+  data-open="false"
+>
+  <!-- Brand -->
+  <div class="px-5 pt-6 pb-5 border-b border-ink-800/80">
+    <a href="/" class="flex items-center gap-3 group">
+      <span
+        class="relative flex h-9 w-9 items-center justify-center
+               bg-cobalt-600 text-white font-mono text-sm font-bold tracking-widest
+               rounded-md shadow-glow"
+      >
+        SY
+        <span class="absolute -inset-px rounded-md ring-1 ring-cobalt-300/30"></span>
+      </span>
+      <div class="leading-tight">
+        <div class="text-white text-sm font-semibold tracking-wide">
+          {SITE.name}
+        </div>
+        <div class="text-[11px] font-mono uppercase tracking-widest text-ink-500">
+          {AUTHOR.signature.slice(0, 24)}
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Search -->
+  <div class="px-5 pt-4 pb-3">
+    <label class="relative block">
+      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-500">
+        <Icon name="search" class="w-4 h-4" />
+      </span>
+      <input
+        type="search"
+        placeholder="Search articles..."
+        class="w-full pl-9 pr-3 py-2 text-sm
+               bg-ink-900/60 text-ink-100 placeholder:text-ink-500
+               border border-ink-800 rounded-md
+               focus:border-cobalt-500 focus:bg-ink-900 focus:outline-none focus:ring-1 focus:ring-cobalt-500/40
+               transition-all"
+        data-search-input
+      />
+      <kbd
+        class="absolute right-2 top-1/2 -translate-y-1/2
+               px-1.5 py-0.5 text-[10px] font-mono text-ink-500
+               bg-ink-800/80 border border-ink-700 rounded"
+      >
+        /
+      </kbd>
+    </label>
+  </div>
+
+  <!-- Scrollable nav body -->
+  <nav class="flex-1 overflow-y-auto scroll-thin px-3 py-2 space-y-6">
+    <!-- Primary nav -->
+    <div>
+      <div class="px-3 mb-2 text-[10px] font-mono uppercase tracking-widest text-ink-600">
+        ── Navigate
+      </div>
+      <ul class="space-y-0.5">
+        {NAV.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={['nav-item', { 'is-active': isActive(item.href) }]}
+            >
+              <Icon name={item.icon} class="w-4 h-4 shrink-0 opacity-80" />
+              <span class="flex-1">{item.label}</span>
+              {isActive(item.href) && (
+                <span class="h-1.5 w-1.5 rounded-full bg-cobalt-400 animate-pulse-soft"></span>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Posts grouped by category (collapsible) -->
+    <div>
+      <div class="px-3 mb-2 text-[10px] font-mono uppercase tracking-widest text-ink-600">
+        ── Articles
+      </div>
+      <ul class="space-y-1">
+        {postsByCategory.map((cat) => (
+          <li>
+            <details class="group/cat" open>
+              <summary
+                class="flex items-center gap-2 px-3 py-2 rounded-md
+                       text-sm text-ink-200 cursor-pointer
+                       hover:bg-white/5 transition-colors
+                       list-none [&::-webkit-details-marker]:hidden"
+              >
+                <Icon
+                  name="chevron-right"
+                  class="w-3.5 h-3.5 text-ink-500 transition-transform group-open/cat:rotate-90"
+                />
+                <span class="flex-1 font-medium tracking-wide">{cat.label}</span>
+                <span class="num-badge !bg-ink-900 !border-ink-800 !text-ink-500">
+                  {cat.posts.length}
+                </span>
+              </summary>
+              <ul class="mt-0.5 ml-2 pl-3 border-l border-ink-800 space-y-0.5">
+                {cat.posts.length === 0 ? (
+                  <li class="px-3 py-1.5 text-xs text-ink-600 italic">尚未发布</li>
+                ) : (
+                  cat.posts.map((p) => (
+                    <li>
+                      <a
+                        href={`/posts/${p.slug}`}
+                        class:list={[
+                          'block px-3 py-1.5 text-[13px] rounded-md transition-colors truncate',
+                          isActive(`/posts/${p.slug}`)
+                            ? 'bg-cobalt-600/20 text-white border-l-2 border-cobalt-400 -ml-[2px] pl-[14px]'
+                            : 'text-ink-400 hover:text-white hover:bg-white/5',
+                        ]}
+                        title={p.data.title}
+                      >
+                        {p.data.title}
+                      </a>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </details>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Footer: social + copyright -->
+  <div class="border-t border-ink-800/80 px-5 py-4">
+    <div class="flex items-center gap-3 mb-3">
+      {SOCIAL.map((s) => (
+        <a
+          href={s.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={s.name}
+          class="text-ink-500 hover:text-cobalt-400 transition-colors"
+        >
+          <Icon name={s.icon} class="w-4 h-4" />
+        </a>
+      ))}
+    </div>
+    <p class="text-[10px] font-mono uppercase tracking-widest text-ink-600 leading-relaxed">
+      © {new Date().getFullYear()} {SITE.name}<br />
+      Built with Astro · Industrial Edition
+    </p>
+  </div>
+</aside>
+
+<!-- Mobile overlay -->
+<div
+  id="sidebar-overlay"
+  class="fixed inset-0 z-30 bg-ink-950/60 backdrop-blur-sm
+         opacity-0 pointer-events-none transition-opacity duration-300
+         data-[show=true]:opacity-100 data-[show=true]:pointer-events-auto
+         lg:hidden"
+  data-show="false"
+></div>
+
+<script>
+  // Sidebar toggle for mobile
+  const sidebar = document.getElementById('app-sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const openSidebar = () => {
+    sidebar?.setAttribute('data-open', 'true');
+    overlay?.setAttribute('data-show', 'true');
+  };
+  const closeSidebar = () => {
+    sidebar?.setAttribute('data-open', 'false');
+    overlay?.setAttribute('data-show', 'false');
+  };
+  overlay?.addEventListener('click', closeSidebar);
+  document.addEventListener('sidebar:open', openSidebar);
+  document.addEventListener('sidebar:close', closeSidebar);
+
+  // "/" key focuses search
+  document.addEventListener('keydown', (e) => {
+    if (
+      e.key === '/' &&
+      !(e.target instanceof HTMLInputElement) &&
+      !(e.target instanceof HTMLTextAreaElement)
+    ) {
+      e.preventDefault();
+      const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+      input?.focus();
+    }
+  });
+
+  // Local search filter (sidebar list)
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+  input?.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    document.querySelectorAll<HTMLLIElement>('#app-sidebar nav li ul li').forEach((li) => {
+      const text = li.textContent?.toLowerCase() ?? '';
+      li.style.display = !q || text.includes(q) ? '' : 'none';
+    });
+  });
+</script>

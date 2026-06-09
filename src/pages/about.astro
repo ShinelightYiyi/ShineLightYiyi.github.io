@@ -1,0 +1,87 @@
+---
+import { SITE, AUTHOR, SOCIAL } from '~/config';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHeader from '@components/PageHeader.astro';
+import Icon from '@components/Icon.astro';
+---
+
+<BaseLayout title="关于" description="关于周衣衣">
+  <PageHeader
+    eyebrow="About"
+    title="关于"
+    subtitle="一些关于我的信息和我的其他在网络上的存在。"
+  />
+
+  <article class="mt-8 card-industrial p-8 md:p-12 animate-fade-up">
+    <div class="grid md:grid-cols-[200px_1fr] gap-8 items-start">
+      <!-- Avatar -->
+      <div class="space-y-3">
+        <div
+          class="aspect-square w-40 md:w-full overflow-hidden rounded-md border border-line bg-ink-100"
+        >
+          <img
+            src={AUTHOR.avatar}
+            alt={AUTHOR.name}
+            class="h-full w-full object-cover"
+            loading="eager"
+          />
+        </div>
+        <div class="text-center md:text-left">
+          <div class="font-display font-bold text-lg text-ink-900">
+            {AUTHOR.name}
+          </div>
+          <div class="text-xs font-mono uppercase tracking-widest text-ink-500 mt-1">
+            @{AUTHOR.handle}
+          </div>
+        </div>
+      </div>
+
+      <!-- Bio -->
+      <div class="prose-industrial">
+        <p class="lead text-lg text-ink-700">
+          我是 <strong>周衣衣</strong>，一个游戏开发者，
+          <strong>中国传媒大学</strong>游戏专业在读。
+        </p>
+        <p>
+          喜欢独立游戏、游戏设计和开发，希望成为一个游戏策划。
+          在这个博客上发一些平时学习的笔记和游戏拆解。
+        </p>
+        <p>
+          目前担任 <strong>中传游戏研发社</strong> 社长。
+        </p>
+
+        <hr />
+
+        <h3>联系方式</h3>
+        <p class="flex items-center gap-2">
+          <Icon name="mail" class="w-4 h-4 text-cobalt-600" />
+          <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+        </p>
+
+        <h3>我的其他平台</h3>
+        <ul class="!list-none !pl-0 grid sm:grid-cols-2 gap-2">
+          {SOCIAL.map((s) => (
+            <li class="!my-0">
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="!no-underline flex items-center justify-between gap-2 px-3 py-2.5
+                       border border-line rounded-md hover:border-cobalt-300 hover:bg-cobalt-50/40
+                       transition-colors group"
+              >
+                <span class="flex items-center gap-2.5">
+                  <Icon name={s.icon} class="w-4 h-4 text-ink-500 group-hover:text-cobalt-600" />
+                  <span class="font-medium text-ink-900 group-hover:text-cobalt-700">
+                    {s.name}
+                  </span>
+                </span>
+                <Icon name="arrow-up-right" class="w-4 h-4 text-ink-400 group-hover:text-cobalt-600" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

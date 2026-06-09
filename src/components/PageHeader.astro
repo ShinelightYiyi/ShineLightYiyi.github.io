@@ -1,0 +1,90 @@
+---
+/**
+ * PageHeader — Industrial title card.
+ * Used at top of every page for consistent eyebrow + title + meta layout.
+ */
+export interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  meta?: string[];
+  align?: 'left' | 'center';
+}
+const { eyebrow, title, subtitle, meta = [], align = 'left' } = Astro.props;
+---
+
+<header
+  class:list={[
+    'relative overflow-hidden border border-line bg-white rounded-lg shadow-soft',
+    'px-7 md:px-10 py-8 md:py-10',
+    'animate-fade-up',
+  ]}
+>
+  <!-- Decorative top hairline accent -->
+  <div
+    class="absolute inset-x-0 top-0 h-px"
+    style="background: linear-gradient(90deg, transparent, #1E5EFF 50%, transparent);"
+  >
+  </div>
+
+  <!-- Decorative grid in corner -->
+  <div
+    class="absolute -right-10 -top-10 h-40 w-40 opacity-[0.06] pointer-events-none"
+    style="background-image: linear-gradient(to right, #0A2540 1px, transparent 1px), linear-gradient(to bottom, #0A2540 1px, transparent 1px); background-size: 16px 16px;"
+  >
+  </div>
+
+  <div
+    class:list={[
+      'relative',
+      align === 'center' && 'text-center',
+    ]}
+  >
+    {eyebrow && (
+      <div
+        class:list={['eyebrow mb-3', align === 'center' && 'justify-center']}
+      >
+        {eyebrow}
+      </div>
+    )}
+
+    <h1
+      class:list={[
+        'font-display tracking-tightest text-ink-900',
+        'text-[clamp(1.875rem,3vw,3rem)] leading-[1.05] font-bold',
+      ]}
+    >
+      <slot name="title">{title}</slot>
+    </h1>
+
+    {subtitle && (
+      <p
+        class:list={[
+          'mt-3 text-ink-600 text-base md:text-lg leading-relaxed max-w-2xl',
+          align === 'center' && 'mx-auto',
+        ]}
+      >
+        {subtitle}
+      </p>
+    )}
+
+    {meta.length > 0 && (
+      <div
+        class:list={[
+          'mt-5 flex flex-wrap items-center gap-x-5 gap-y-2',
+          'text-xs font-mono uppercase tracking-widest text-ink-500',
+          align === 'center' && 'justify-center',
+        ]}
+      >
+        {meta.map((m, i) => (
+          <span class="flex items-center gap-2">
+            {i > 0 && <span class="h-3 w-px bg-line"></span>}
+            <span>{m}</span>
+          </span>
+        ))}
+      </div>
+    )}
+
+    <slot />
+  </div>
+</header>

@@ -1,0 +1,285 @@
+/* ==========================================================================
+   ShineLightYiyi Blog — Global Styles
+   Theme: Blue-White Industrial · Inspired by Linear / Stripe / Vercel
+   ========================================================================== */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Base Tokens ---------- */
+@layer base {
+  :root {
+    --bg: #ffffff;
+    --bg-elevated: #f7f8fa;
+    --fg: #0e1320;
+    --fg-muted: #6b7280;
+    --line: #e5e7eb;
+    --line-strong: #c9d0da;
+    --accent: #1e5eff;
+    --accent-deep: #0a2540;
+    --sidebar-bg: #0a2540;
+    --sidebar-fg: #c9d0da;
+    --sidebar-fg-strong: #ffffff;
+    --shell-pad: clamp(1rem, 3vw, 2rem);
+    --max-w: 1440px;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --transition: cubic-bezier(0.16, 1, 0.3, 1);
+
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans bg-white text-ink-800 antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01';
+    background-color: var(--bg);
+    color: var(--fg);
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background-color: rgba(30, 94, 255, 0.16);
+    color: #0a2540;
+  }
+
+  /* Industrial-style focus ring */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Headings — strong, condensed-like, industrial */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tightest text-ink-900;
+    font-weight: 700;
+  }
+
+  hr {
+    @apply border-0 border-t border-line;
+  }
+}
+
+/* ---------- Component Layer ---------- */
+@layer components {
+  /* —— Hairline System (1px crisp lines) —— */
+  .hairline {
+    @apply border-line;
+  }
+  .hairline-t { @apply border-t border-line; }
+  .hairline-b { @apply border-b border-line; }
+  .hairline-l { @apply border-l border-line; }
+  .hairline-r { @apply border-r border-line; }
+
+  /* —— Industrial Card —— */
+  .card-industrial {
+    @apply bg-white border border-line rounded-md transition-all duration-300;
+  }
+  .card-industrial:hover {
+    @apply border-cobalt-300 shadow-soft;
+  }
+
+  /* —— Eyebrow Label (small uppercase tag) —— */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-ink-500;
+  }
+  .eyebrow::before {
+    content: '';
+    @apply inline-block w-6 h-px bg-cobalt-600;
+  }
+
+  /* —— Button: Primary —— */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5
+           bg-ink-900 text-white text-sm font-medium tracking-wide
+           rounded-md border border-ink-900
+           transition-all duration-200
+           hover:bg-cobalt-600 hover:border-cobalt-600 hover:shadow-glow
+           active:scale-[0.98];
+  }
+
+  /* —— Button: Ghost —— */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5
+           bg-white text-ink-800 text-sm font-medium
+           rounded-md border border-line
+           transition-all duration-200
+           hover:border-ink-700 hover:text-ink-900;
+  }
+
+  /* —— Sidebar Nav Item —— */
+  .nav-item {
+    @apply flex items-center gap-3 px-4 py-2.5 rounded-md
+           text-sm text-ink-300 transition-all duration-200
+           hover:bg-white/5 hover:text-white;
+  }
+  .nav-item.is-active {
+    @apply bg-white/10 text-white;
+  }
+
+  /* —— Tag Chip (industrial style) —— */
+  .tag-chip {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1
+           text-[11px] font-mono uppercase tracking-wider
+           text-ink-700 bg-ink-50
+           border border-line rounded-sm
+           transition-colors;
+  }
+  .tag-chip:hover {
+    @apply text-cobalt-700 border-cobalt-300 bg-cobalt-50;
+  }
+
+  /* —— Numeric badge (Linear-style step number) —— */
+  .num-badge {
+    @apply inline-flex items-center justify-center
+           min-w-[1.5rem] h-6 px-1.5
+           text-[11px] font-mono tabular-nums tracking-wider
+           text-ink-500 bg-white border border-line rounded-sm;
+  }
+}
+
+/* ---------- Utilities ---------- */
+@layer utilities {
+  /* Industrial grid background */
+  .bg-grid-faint {
+    background-image:
+      linear-gradient(to right, rgba(14, 19, 32, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(14, 19, 32, 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+  .bg-grid-dark {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  /* Cursor glow follow effect */
+  .cursor-spotlight {
+    background: radial-gradient(
+      600px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(30, 94, 255, 0.08),
+      transparent 40%
+    );
+  }
+
+  /* Tabular numerals */
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  /* Scrollbar — minimal industrial */
+  .scroll-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+  .scroll-thin::-webkit-scrollbar-track { background: transparent; }
+  .scroll-thin::-webkit-scrollbar-thumb {
+    background: rgba(155, 164, 178, 0.4);
+    border-radius: 3px;
+  }
+  .scroll-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(30, 94, 255, 0.5);
+  }
+}
+
+/* ---------- Article Prose Styling (industrial reading experience) ---------- */
+.prose-industrial {
+  @apply text-ink-800 leading-[1.8];
+  font-size: 16px;
+}
+.prose-industrial > * + * { margin-top: 1.2em; }
+.prose-industrial h1 { @apply text-3xl md:text-4xl mt-12 mb-6 tracking-tightest; }
+.prose-industrial h2 {
+  @apply text-2xl mt-10 mb-4 pb-2 border-b border-line tracking-tight;
+}
+.prose-industrial h3 { @apply text-xl mt-8 mb-3; }
+.prose-industrial p { @apply leading-[1.85]; }
+.prose-industrial a {
+  @apply text-cobalt-600 underline decoration-cobalt-300 underline-offset-4 decoration-1
+         transition-colors hover:text-cobalt-700 hover:decoration-cobalt-600;
+}
+.prose-industrial strong { @apply text-ink-900 font-semibold; }
+.prose-industrial em { @apply italic text-ink-700; }
+.prose-industrial blockquote {
+  @apply border-l-2 border-cobalt-500 pl-5 my-6 text-ink-600 italic;
+}
+.prose-industrial code {
+  @apply font-mono text-[0.9em] px-1.5 py-0.5 rounded
+         bg-cobalt-50 text-cobalt-700 border border-cobalt-100;
+}
+.prose-industrial pre {
+  @apply font-mono text-sm bg-ink-900 text-ink-100 p-5 rounded-lg overflow-x-auto
+         border border-ink-800 my-6;
+}
+.prose-industrial pre code {
+  @apply bg-transparent text-inherit p-0 border-0;
+}
+.prose-industrial ul, .prose-industrial ol { @apply pl-6; }
+.prose-industrial ul { @apply list-disc; }
+.prose-industrial ol { @apply list-decimal; }
+.prose-industrial li { @apply my-1.5; }
+.prose-industrial img {
+  @apply max-w-full h-auto rounded-lg border border-line my-6;
+}
+.prose-industrial table {
+  @apply w-full border-collapse my-6;
+}
+.prose-industrial th, .prose-industrial td {
+  @apply border border-line px-3 py-2 text-left;
+}
+.prose-industrial th {
+  @apply bg-ink-50 font-semibold text-ink-900;
+}
+
+/* ---------- Custom directives for editor (kx-* classes) ---------- */
+/* Dynamic text effects available in articles */
+.kx-shake { display: inline-block; animation: kxShake 0.5s ease-in-out infinite; }
+.kx-wave  { display: inline-block; animation: kxWave 1.6s ease-in-out infinite; }
+.kx-glow  { color: var(--accent); text-shadow: 0 0 10px rgba(30, 94, 255, 0.6); }
+.kx-rainbow {
+  background: linear-gradient(90deg, #ff5e5e, #ffaa00, #1e5eff, #00d4aa, #b366ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 100%;
+  animation: kxRainbow 4s linear infinite;
+}
+.kx-typewriter {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid var(--accent);
+  animation: kxType 3s steps(40, end), kxBlink 0.7s step-end infinite;
+}
+.kx-emphasize { font-weight: 700; color: var(--accent-deep); letter-spacing: 0.02em; }
+.kx-big   { font-size: 1.35em; font-weight: 600; }
+.kx-huge  { font-size: 1.75em; font-weight: 700; }
+.kx-mini  { font-size: 0.85em; color: var(--fg-muted); }
+
+@keyframes kxShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-1px) rotate(-0.5deg); }
+  75% { transform: translateX(1px) rotate(0.5deg); }
+}
+@keyframes kxWave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes kxRainbow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes kxType {
+  from { width: 0; }
+  to { width: 100%; }
+}
+@keyframes kxBlink {
+  from, to { border-color: transparent; }
+  50% { border-color: var(--accent); }
+}

@@ -1,0 +1,117 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHeader from '@components/PageHeader.astro';
+import Icon from '@components/Icon.astro';
+---
+
+<BaseLayout
+  title="编辑模式"
+  description="创建文章 / 上传 PDF 自动转换 / 富文本与动态特效"
+  disableFx={false}
+>
+  <PageHeader
+    eyebrow="Editor · Coming in Phase 5"
+    title="编辑模式"
+    subtitle="支持 PDF 一键导入、Markdown 编辑、动态文字特效与颜文字面板。"
+    meta={['Phase 5 · Editor SPA', 'Phase 6 · PDF + OCR']}
+  />
+
+  <div class="mt-10 grid lg:grid-cols-2 gap-6">
+    <div class="card-industrial p-8 animate-fade-up">
+      <div class="text-cobalt-600 mb-4">
+        <Icon name="upload" class="w-8 h-8" strokeWidth={1.4} />
+      </div>
+      <h3 class="font-display text-xl font-bold text-ink-900 mb-2">
+        PDF 一键转换
+      </h3>
+      <p class="text-ink-600 leading-relaxed">
+        支持上传 PDF 文件，自动提取文字与版式，含扫描版 OCR（基于 Tesseract.js 浏览器端识别）。
+        转换后可直接下载为 Markdown 文件。
+      </p>
+      <div class="mt-5 flex flex-wrap gap-2">
+        <span class="tag-chip">PDF.js</span>
+        <span class="tag-chip">Tesseract.js</span>
+        <span class="tag-chip">浏览器端 OCR</span>
+      </div>
+    </div>
+
+    <div class="card-industrial p-8 animate-fade-up" style="animation-delay: 80ms;">
+      <div class="text-cobalt-600 mb-4">
+        <Icon name="sparkle" class="w-8 h-8" strokeWidth={1.4} />
+      </div>
+      <h3 class="font-display text-xl font-bold text-ink-900 mb-2">
+        动态文字 & 颜文字
+      </h3>
+      <p class="text-ink-600 leading-relaxed">
+        通过类似 Markdown 的扩展语法，<code class="text-cobalt-700 bg-cobalt-50 px-1 rounded">::shake[抖动]</code>
+        、<code class="text-cobalt-700 bg-cobalt-50 px-1 rounded">::glow[发光]</code>、
+        <code class="text-cobalt-700 bg-cobalt-50 px-1 rounded">::big[放大]</code>
+        即可为文字添加效果，并配有颜文字快捷面板。
+      </p>
+      <div class="mt-5 flex flex-wrap gap-2">
+        <span class="kx-shake tag-chip">抖动</span>
+        <span class="kx-wave tag-chip">波浪</span>
+        <span class="kx-glow tag-chip">发光</span>
+        <span class="kx-rainbow tag-chip">彩虹</span>
+        <span class="tag-chip kx-big">放大</span>
+      </div>
+    </div>
+
+    <div class="card-industrial p-8 animate-fade-up lg:col-span-2" style="animation-delay: 160ms;">
+      <div class="flex items-start gap-4">
+        <div class="text-cobalt-600 shrink-0">
+          <Icon name="code" class="w-8 h-8" strokeWidth={1.4} />
+        </div>
+        <div>
+          <h3 class="font-display text-xl font-bold text-ink-900 mb-2">
+            两种创作方式
+          </h3>
+          <p class="text-ink-600 leading-relaxed">
+            既可以直接在 <code class="text-cobalt-700 bg-cobalt-50 px-1 rounded">/src/content/posts/</code>
+            目录下用代码新增 Markdown / MDX 文件，也可以通过本页的图形化编辑器输出 .md 文件后再 push 到仓库。
+          </p>
+          <div class="mt-5 p-5 rounded-md bg-ink-50 border border-line">
+            <div class="text-xs font-mono uppercase tracking-widest text-ink-500 mb-2">
+              当前阶段（1-3）已完成：
+            </div>
+            <ul class="space-y-1.5 text-sm text-ink-700">
+              <li class="flex items-center gap-2">
+                <Icon name="check" class="w-4 h-4 text-cobalt-600" />
+                项目重构（Astro + Tailwind + TypeScript）
+              </li>
+              <li class="flex items-center gap-2">
+                <Icon name="check" class="w-4 h-4 text-cobalt-600" />
+                左侧深色 Sidebar + 右侧主区双栏布局
+              </li>
+              <li class="flex items-center gap-2">
+                <Icon name="check" class="w-4 h-4 text-cobalt-600" />
+                蓝白工业风视觉系统 + 鼠标动态背景
+              </li>
+              <li class="flex items-center gap-2">
+                <Icon name="check" class="w-4 h-4 text-cobalt-600" />
+                文章列表 / 详情 / 标签 / 分类 / 关于 全部页面
+              </li>
+            </ul>
+            <div class="mt-4 text-xs font-mono uppercase tracking-widest text-ink-500 mb-2">
+              下一阶段（4-7）待开发：
+            </div>
+            <ul class="space-y-1.5 text-sm text-ink-700">
+              <li class="flex items-center gap-2 opacity-60">
+                <span class="w-4 h-4 inline-flex items-center justify-center text-ink-400">○</span>
+                富文本编辑器 SPA + 动态文字工具栏
+              </li>
+              <li class="flex items-center gap-2 opacity-60">
+                <span class="w-4 h-4 inline-flex items-center justify-center text-ink-400">○</span>
+                PDF 上传 + Tesseract.js OCR
+              </li>
+              <li class="flex items-center gap-2 opacity-60">
+                <span class="w-4 h-4 inline-flex items-center justify-center text-ink-400">○</span>
+                GitHub Actions 自动部署
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

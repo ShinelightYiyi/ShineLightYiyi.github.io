@@ -1,0 +1,128 @@
+---
+/**
+ * BaseLayout — the application shell.
+ * Layout: fixed sidebar (left, dark) + main content (right, light) + cursor fx.
+ */
+import '~/styles/global.css';
+import { SITE, AUTHOR } from '~/config';
+import Sidebar from '@components/Sidebar.astro';
+import MobileTopBar from '@components/MobileTopBar.astro';
+import CursorFx from '@components/CursorFx.astro';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  /** Disable cursor effect on heavy pages (e.g. editor) */
+  disableFx?: boolean;
+}
+const {
+  title,
+  description = SITE.description,
+  ogImage,
+  disableFx = false,
+} = Astro.props;
+
+const fullTitle = title ? `${title} · ${SITE.seoTitle}` : SITE.seoTitle;
+const canonical = new URL(Astro.url.pathname, SITE.url).toString();
+---
+
+<!doctype html>
+<html lang={SITE.locale} class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#0A2540" />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={AUTHOR.name} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+
+    <!-- Favicons -->
+    <link rel="icon" href="/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+    <link rel="manifest" href="/pwa/manifest.json" />
+
+    <!-- Web fonts (Inter + JetBrains Mono) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Inline anti-FOUC for sidebar scrollbar suppression on first paint -->
+    <style is:inline>
+      html, body { background: #f7f8fa; }
+      ::-webkit-scrollbar { width: 10px; height: 10px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(155, 164, 178, 0.45);
+        border-radius: 5px;
+      }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(30, 94, 255, 0.55); }
+    </style>
+  </head>
+
+  <body class="min-h-dvh bg-ink-50 text-ink-900 selection:bg-cobalt-500/20">
+    <!-- Skip link for a11y -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50
+             focus:bg-cobalt-600 focus:text-white focus:px-3 focus:py-2 focus:rounded"
+    >
+      Skip to content
+    </a>
+
+    <!-- Background fx (z-0) -->
+    {!disableFx && <CursorFx />}
+
+    <!-- Sidebar (fixed, z-40) -->
+    <Sidebar />
+
+    <!-- Mobile top bar (z-30) -->
+    <MobileTopBar />
+
+    <!-- Main content shell -->
+    <div class="relative z-10 lg:pl-72 min-h-dvh flex flex-col">
+      <main
+        id="main-content"
+        class="flex-1 px-4 sm:px-6 lg:px-10 xl:px-14 py-6 lg:py-10
+               max-w-[1280px] w-full mx-auto"
+      >
+        <slot />
+      </main>
+
+      <!-- Footer -->
+      <footer
+        class="mt-12 border-t border-line bg-white/60 backdrop-blur
+               px-4 sm:px-6 lg:px-10 xl:px-14 py-8"
+      >
+        <div class="max-w-[1280px] mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div class="text-xs font-mono uppercase tracking-widest text-ink-500">
+            © {new Date().getFullYear()} {SITE.name} · All rights reserved
+          </div>
+          <div class="text-xs font-mono uppercase tracking-widest text-ink-500">
+            Built with <span class="text-cobalt-600">Astro</span> ·
+            Tailwind · Industrial Edition v2.0
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

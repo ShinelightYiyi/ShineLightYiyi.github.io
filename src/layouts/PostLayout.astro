@@ -1,0 +1,110 @@
+---
+/**
+ * PostLayout — single article view.
+ * Layout: Title card (hero) + prose body + tags + footer nav
+ */
+import type { CollectionEntry } from 'astro:content';
+import { CATEGORIES } from '~/config';
+import BaseLayout from './BaseLayout.astro';
+import PageHeader from '@components/PageHeader.astro';
+import Icon from '@components/Icon.astro';
+
+export interface Props {
+  post: CollectionEntry<'posts'>;
+  prev?: CollectionEntry<'posts'>;
+  next?: CollectionEntry<'posts'>;
+}
+const { post, prev, next } = Astro.props;
+const { title, subtitle, description, date, updated, author, tags, category, source } =
+  post.data;
+const cat = CATEGORIES.find((c) => c.id === category);
+
+const dateStr = date.toLocaleDateString('zh-CN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+const updatedStr = updated
+  ? updated.toLocaleDateString('zh-CN', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  : null;
+---
+
+<BaseLayout title={title} description={description ?? subtitle ?? ''}>
+  <!-- Title card -->
+  <PageHeader
+    eyebrow={cat?.label ?? 'Article'}
+    title={title}
+    subtitle={subtitle}
+    meta={[
+      `Posted · ${dateStr}`,
+      ...(updatedStr ? [`Updated · ${updatedStr}`] : []),
+      `By ${author}`,
+      ...(source === 'pdf' ? ['Imported from PDF'] : []),
+    ]}
+  />
+
+  <!-- Article body inside an industrial card -->
+  <article
+    class="mt-8 card-industrial p-6 md:p-10 lg:p-14
+           shadow-soft animate-fade-up"
+    style="animation-delay: 80ms;"
+  >
+    <div class="prose-industrial mx-auto max-w-[72ch]">
+      <slot />
+    </div>
+
+    <!-- Tags footer -->
+    {tags.length > 0 && (
+      <div class="mt-12 pt-6 border-t border-line max-w-[72ch] mx-auto">
+        <div class="eyebrow mb-3">Tags</div>
+        <div class="flex flex-wrap gap-2">
+          {tags.map((t) => (
+            <a href={`/tags/${t}`} class="tag-chip">#{t}</a>
+          ))}
+        </div>
+      </div>
+    )}
+  </article>
+
+  <!-- Prev / Next nav -->
+  {(prev || next) && (
+    <nav class="mt-8 grid sm:grid-cols-2 gap-4">
+      {prev ? (
+        <a
+          href={`/posts/${prev.slug}`}
+          class="group card-industrial p-5 hover:border-cobalt-300"
+        >
+          <div class="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-ink-500">
+            <Icon name="arrow-left" class="w-3.5 h-3.5" />
+            Previous
+          </div>
+          <div class="mt-2 text-ink-900 font-semibold group-hover:text-cobalt-700 transition-colors">
+            {prev.data.title}
+          </div>
+        </a>
+      ) : (
+        <span></span>
+      )}
+      {next ? (
+        <a
+          href={`/posts/${next.slug}`}
+          class="group card-industrial p-5 hover:border-cobalt-300 sm:text-right"
+        >
+          <div class="flex sm:justify-end items-center gap-2 text-xs font-mono uppercase tracking-widest text-ink-500">
+            Next
+            <Icon name="arrow-right" class="w-3.5 h-3.5" />
+          </div>
+          <div class="mt-2 text-ink-900 font-semibold group-hover:text-cobalt-700 transition-colors">
+            {next.data.title}
+          </div>
+        </a>
+      ) : (
+        <span></span>
+      )}
+    </nav>
+  )}
+</BaseLayout>

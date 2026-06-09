@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHeader from '@components/PageHeader.astro';
+
+const posts = await getCollection('posts', ({ data }) => !data.draft);
+const tagMap = new Map<string, number>();
+for (const p of posts) {
+  for (const t of p.data.tags) {
+    tagMap.set(t, (tagMap.get(t) ?? 0) + 1);
+  }
+}
+const tags = [...tagMap.entries()].sort((a, b) => b[1] - a[1]);
+const max = tags[0]?.[1] ?? 1;
+---
+
+<BaseLayout title="标签" description="所有文章标签">
+  <PageHeader
+    eyebrow="Taxonomy"
+    title="标签云"
+    subtitle="按使用频次排列，字体越大代表使用越多。"
+    meta={[`${tags.length} tags`]}
+  />
+
+  {tags.length === 0 ? (
+    <div class="mt-10 card-industrial p-16 text-center text-ink-500">
+      暂无标签
+    </div>
+  ) : (
+    <div class="mt-10 card-industrial p-8 md:p-12 animate-fade-up">
+      <div class="flex flex-wrap gap-x-5 gap-y-3 items-baseline">
+        {tags.map(([t, n]) => {
+          const ratio = n / max;
+          const fontSize = `${Math.max(0.85, Math.min(2.2, 0.85 + ratio * 1.4))}rem`;
+          const opacity = Math.max(0.5, 0.5 + ratio * 0.5);
+          return (
+            <a
+              href={`/tags/${t}`}
+              class="group inline-flex items-baseline gap-1
+                     text-ink-900 hover:text-cobalt-700 transition-colors"
+              style={`font-size: ${fontSize}; opacity: ${opacity};`}
+            >
+              <span class="font-display font-semibold">#{t}</span>
+              <span class="text-xs font-mono text-ink-400 tabular-nums">{n}</span>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  )}
+</BaseLayout>

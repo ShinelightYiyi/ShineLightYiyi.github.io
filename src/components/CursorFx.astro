@@ -1,0 +1,175 @@
+---
+/**
+ * CursorFx — Industrial-style cursor follow effect.
+ * Provides:
+ *  1. Subtle radial spotlight following cursor
+ *  2. Faint grid background
+ *  3. Floating geometric particles (canvas, low-cost)
+ */
+---
+
+<div
+  id="cursor-fx"
+  class="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+  aria-hidden="true"
+>
+  <!-- Static grid layer -->
+  <div class="absolute inset-0 bg-grid-faint opacity-60"></div>
+
+  <!-- Vignette gradient -->
+  <div
+    class="absolute inset-0"
+    style="background: radial-gradient(120% 80% at 50% 0%, transparent, rgba(247,248,250,0.85) 70%);"
+  >
+  </div>
+
+  <!-- Cursor spotlight -->
+  <div id="cursor-spotlight" class="absolute inset-0 cursor-spotlight"></div>
+
+  <!-- Particle canvas -->
+  <canvas
+    id="cursor-fx-canvas"
+    class="absolute inset-0 h-full w-full"
+  ></canvas>
+</div>
+
+<script>
+  type Particle = {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    r: number;
+    a: number;
+    shape: 'dot' | 'line' | 'cross';
+  };
+
+  const canvas = document.getElementById('cursor-fx-canvas') as HTMLCanvasElement | null;
+  const spotlight = document.getElementById('cursor-spotlight') as HTMLElement | null;
+  if (canvas && spotlight) {
+    const ctx = canvas.getContext('2d');
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let w = 0;
+    let h = 0;
+    let mx = window.innerWidth / 2;
+    let my = window.innerHeight / 2;
+    let particles: Particle[] = [];
+
+    const resize = () => {
+      w = canvas.clientWidth;
+      h = canvas.clientHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx?.scale(dpr, dpr);
+    };
+
+    const seed = () => {
+      const count = Math.min(36, Math.round((w * h) / 50000));
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.18,
+        vy: (Math.random() - 0.5) * 0.18,
+        r: Math.random() * 1.6 + 0.6,
+        a: Math.random() * 0.5 + 0.15,
+        shape: (['dot', 'dot', 'dot', 'cross', 'line'] as const)[
+          Math.floor(Math.random() * 5)
+        ],
+      }));
+    };
+
+    const drawShape = (p: Particle) => {
+      if (!ctx) return;
+      ctx.save();
+      ctx.globalAlpha = p.a;
+      ctx.strokeStyle = '#1E5EFF';
+      ctx.fillStyle = '#1E5EFF';
+      ctx.lineWidth = 1;
+      if (p.shape === 'dot') {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (p.shape === 'cross') {
+        ctx.beginPath();
+        ctx.moveTo(p.x - 4, p.y);
+        ctx.lineTo(p.x + 4, p.y);
+        ctx.moveTo(p.x, p.y - 4);
+        ctx.lineTo(p.x, p.y + 4);
+        ctx.stroke();
+      } else {
+        ctx.beginPath();
+        ctx.moveTo(p.x - 6, p.y);
+        ctx.lineTo(p.x + 6, p.y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    };
+
+    const tick = () => {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, w, h);
+
+      // Connect particles near cursor with hairlines
+      particles.forEach((p) => {
+        // Drift with subtle attraction to cursor
+        const dx = mx - p.x;
+        const dy = my - p.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 220) {
+          p.vx += (dx / dist) * 0.005;
+          p.vy += (dy / dist) * 0.005;
+          // Faint connecting line
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, 0.18 * (1 - dist / 220));
+          ctx.strokeStyle = '#1E5EFF';
+          ctx.lineWidth = 0.6;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mx, my);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.985;
+        p.vy *= 0.985;
+
+        // Wrap edges
+        if (p.x < 0) p.x = w;
+        if (p.x > w) p.x = 0;
+        if (p.y < 0) p.y = h;
+        if (p.y > h) p.y = 0;
+
+        drawShape(p);
+      });
+
+      requestAnimationFrame(tick);
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      mx = e.clientX;
+      my = e.clientY;
+      spotlight.style.setProperty('--mx', `${mx}px`);
+      spotlight.style.setProperty('--my', `${my}px`);
+    };
+
+    const onResize = () => {
+      resize();
+      seed();
+    };
+
+    // Respect reduced-motion users
+    const prefersReduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+
+    resize();
+    seed();
+    if (!prefersReduced) {
+      window.addEventListener('pointermove', onPointerMove, { passive: true });
+      requestAnimationFrame(tick);
+    }
+    window.addEventListener('resize', onResize);
+  }
+</script>

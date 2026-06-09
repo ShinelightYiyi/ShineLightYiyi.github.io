@@ -1,0 +1,31 @@
+---
+/**
+ * MobileTopBar — visible only on screens < lg.
+ * Sticky, hairline-bottom, shows brand + hamburger.
+ */
+import { SITE } from '~/config';
+import Icon from './Icon.astro';
+---
+
+<header
+  class="lg:hidden sticky top-0 z-30 bg-white/85 backdrop-blur
+         border-b border-line h-14 flex items-center justify-between px-4"
+>
+  <a href="/" class="flex items-center gap-2 text-ink-900 font-semibold tracking-tight">
+    <span
+      class="flex h-7 w-7 items-center justify-center
+             bg-ink-950 text-white font-mono text-[10px] font-bold tracking-widest rounded"
+    >
+      SY
+    </span>
+    {SITE.name}
+  </a>
+  <button
+    type="button"
+    aria-label="Open menu"
+    class="btn-ghost !p-2"
+    onclick="document.dispatchEvent(new CustomEvent('sidebar:open'))"
+  >
+    <Icon name="menu" class="w-5 h-5" />
+  </button>
+</header>
