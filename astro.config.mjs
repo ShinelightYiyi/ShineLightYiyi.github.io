@@ -2,7 +2,6 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import mdx from '@astrojs/mdx';
-import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 // User site (xxx.github.io) — base is "/", custom domain not used.
@@ -16,7 +15,6 @@ export default defineConfig({
       applyBaseStyles: false,
     }),
     mdx(),
-    sitemap(),
   ],
   build: {
     assets: 'assets',
